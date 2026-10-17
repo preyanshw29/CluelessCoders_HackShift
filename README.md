@@ -36,6 +36,11 @@ flowchart TD
         Camera["Optical Field Camera"]
     end
 
+    subgraph MLService["ML Microservice (:8001)"]
+        DiseaseModel["PlantVillage MobileNetV2 Classifier"]
+        CanopyExG["ExG Canopy Loss Segmentation & SSIM"]
+    end
+
     subgraph BackendCore["FastAPI Backend (:8000)"]
         Ingest["Telemetry & Image Ingestion API"]
         Vault["Cryptographic Hash Chain (SHA-256)"]
@@ -59,9 +64,12 @@ flowchart TD
 
     Sensors -->|POST /api/readings| Ingest
     Camera -->|POST /api/fields/1/images| Ingest
+    Camera -->|POST /damage/compare| CanopyExG
+    Camera -->|POST /predict/disease| DiseaseModel
     Ingest --> Vault
     Vault --> DB
     WeatherAPI --> Scoring
+    CanopyExG --> Scoring
     Ingest --> Scoring
     Scoring --> PolicyEngine
     PolicyEngine --> PDFGen
@@ -90,9 +98,17 @@ cd CluelessCoders_HackShift
 cp .env.example .env
 ```
 
-### 2. Run Backend (Port 8000)
+### 2. Run ML Microservice (Port 8001, Optional / Standalone)
 ```bash
-cd backend
+cd ml-service
+pip install -r requirements.txt
+python run.py
+```
+* ML Health check: `curl http://localhost:8001/health`
+
+### 3. Run Backend (Port 8000)
+```bash
+cd ../backend
 pip install -r requirements.txt -r requirements-m4.txt
 
 # Start backend server
@@ -101,7 +117,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 * Interactive API Documentation (Swagger): [http://localhost:8000/docs](http://localhost:8000/docs)
 * Health check: `curl http://localhost:8000/api/health`
 
-### 3. Run Frontend (Port 3000)
+### 4. Run Frontend (Port 3000)
 ```bash
 cd ../frontend-simulation/frontend
 npm install
@@ -109,8 +125,12 @@ npm run dev
 ```
 * Farmer Web Application: [http://localhost:3000](http://localhost:3000)
 
-### 4. Run Smoke Test Suite
+### 5. Run Verification & Test Suites
 ```bash
+# Run Member 4 unit tests
+python -m pytest backend/tests/test_m4.py
+
+# Run End-to-End System Smoke Test
 python scripts/smoke_test.py
 ```
 
@@ -118,8 +138,13 @@ python scripts/smoke_test.py
 
 ## 📡 API Endpoints Overview
 
-### Core Backend & Evidence Vault (Member 2)
-* `GET /api/health`: Health status.
+### ML Microservice (Member 1 — Port 8001)
+* `GET /health`: Service health and model version registry.
+* `POST /predict/disease`: MobileNetV2 crop pathology diagnostics with top-3 predictions.
+* `POST /damage/compare`: Bitemporal ExG canopy segmentation, SSIM loss analysis, and heatmap.
+
+### Core Backend & Evidence Vault (Member 2 — Port 8000)
+* `GET /api/health`: Backend health status.
 * `GET /api/fields`, `GET /api/fields/{id}`: Farm and farmer details.
 * `POST /api/readings`: Stream sensor telemetry.
 * `GET /api/fields/{id}/readings`: Historic sensor readings (limit 200).
@@ -128,7 +153,7 @@ python scripts/smoke_test.py
 * `POST /api/simulate/{scenario}`: Trigger simulated climate shock (`hail`, `flood`, `drought`, `frost`, `fertilizer_spike`).
 * `POST /api/fields/{id}/check-weather`: Trigger live Open-Meteo satellite weather check.
 
-### Reports, Alerts, Market & Organic (Member 4)
+### Reports, Alerts, Market & Organic (Member 4 — Port 8000)
 * `GET /api/claims/{id}/report.pdf`: Download insurer-admissible PDF claim dossier.
 * `GET /api/fields/{id}/alerts`: Fetch recent alerts (English / Hindi).
 * `POST /api/alerts/test`: Dispatch sample WhatsApp / App alert.
@@ -152,6 +177,7 @@ python scripts/smoke_test.py
 ---
 
 ## 📄 Documentation Links
+* [REST API Reference & OpenAPI Specification](docs/api_reference.md)
 * [Pitch Presentation Outline & Slide Deck](docs/pitch_outline.md)
 * [3-Minute Timed Demonstration Script](docs/demo_script.md)
 * [Judge Q&A & Technical Defense Guide](docs/judge_qa.md)
