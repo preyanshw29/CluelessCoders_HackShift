@@ -52,18 +52,20 @@
 2. **Narration:**
    > *"This is our hero claim page. Notice three key elements:
    > First, the 72-hour statutory deadline with a live countdown so no claim lapses.
-   > Second, our headline innovation: the Multi-Factor Confidence Score. Rather than trusting a photo alone, we blend 40% weather radar validation, 40% computer vision canopy loss (42.5%), and 20% ground sensor corroboration to reach an overall 0.88 High-Confidence score.
+   > Second, our headline innovation: the Multi-Factor Confidence Score. Rather than trusting a photo alone, we blend 40% weather radar validation, 40% computer vision canopy loss (evaluated by our MobileNetV2 ML service), and 20% ground sensor corroboration to reach an overall 0.94 High-Confidence score.
    > Third, using the policy terms, we calculate the net claimable indemnity after deductibles: an estimated ₹27,000 to ₹51,000.
    > Now I click 'Download PDF Report'—instantly, our backend compiles an insurer-grade dossier complete with timestamps in UTC/IST, sensor telemetry curves, and the full hash-chain audit table."*
 
-#### Minute 2:10 – 3:00: Post-Harvest Market & Organic Evidence
+#### Minute 2:10 – 3:00: Post-Harvest Market Realization & Pathology Diagnostics
 1. **Action:** Navigate to `http://localhost:3000/market`.
 2. **Narration:**
    > *"FasalSakshi is built for prosperity, not just disaster. In normal seasons, farmers face mandi price opacity and exploitative middlemen.
    > Our market module compares regional mandis and factors in real road transport costs at ₹0.25 per quintal per kilometer. Even though Bilaspur is further away, its higher modal price yields the highest net profit after transport.
-   > Finally, notice our Organic Evidence Score. By logging chemical-free inputs like neem spray and vermicompost, while monitoring soil EC for synthetic fertilizer dumping, Ramesh proves his crop's organic integrity and commands a 10% to 30% price premium."*
+   > Finally, notice our Organic Evidence Score. By logging chemical-free inputs like neem spray and vermicompost, while monitoring soil EC for synthetic fertilizer dumping, Ramesh proves his crop's organic integrity and commands a 10% to 30% price premium.
+   > In parallel, our ML microservice on port 8001 continuously scans leaf photos for early-stage pathology—instantly identifying Early Blight and Bacterial Spot before catastrophic crop loss occurs."*
 
 ---
+
 
 ### Fallback Checklist for Live Presentation
 * **If internet drops:** All backend data, CSV prices, and fallback mock weather run completely locally on `localhost:8000` and `localhost:3000`. No external connection is strictly required.
