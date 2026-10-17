@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Query
 from app.alerts import send_alert
 from app.db import get_conn, row_to_dict
 
-router = APIRouter()
+router = APIRouter(tags=["Alerts & Notifications"])
 
 
 @router.get("/api/fields/{id}/alerts")

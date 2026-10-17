@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.market import get_best_mandi, get_market_prices
 
-router = APIRouter()
+router = APIRouter(tags=["Market & Logistics"])
 
 
 @router.get("/api/market/prices")

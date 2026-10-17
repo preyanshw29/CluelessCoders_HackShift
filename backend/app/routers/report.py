@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from app.db import DATA_DIR, REPORTS_DIR, get_conn
 from app.report import generate_claim_pdf
 
-router = APIRouter()
+router = APIRouter(tags=["Claims & Reports"])
 
 
 @router.get("/api/claims/{id}/report.pdf")

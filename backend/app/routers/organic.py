@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from app.db import get_conn, row_to_dict
 
-router = APIRouter()
+router = APIRouter(tags=["Organic Evidence"])
 
 # Note: Soil EC and pH are anomaly flags indicating possible chemical fertilizer / salt dumping,
 # but they cannot affirmatively prove produce is organic.
