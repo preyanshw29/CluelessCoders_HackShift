@@ -264,3 +264,57 @@ Fetch farm alerts in chronological order (newest first).
 
 ### `POST /api/alerts/test?field_id=1&language=hi&kind=damage_detected`
 Dispatch a test alert via Twilio WhatsApp (if configured) or persist to database log.
+
+---
+
+## 9. Machine Learning Microservice (Member 1 — Port 8001)
+
+The ML service runs as an independent FastAPI microservice on port `8001` (`http://localhost:8001`).
+
+### `GET /health`
+Verify ML service status and active model identifier.
+* **Response (200 OK):**
+```json
+{
+  "status": "ok",
+  "disease_model": "PlantVillage-MobileNetV2-Tomato",
+  "version": "1"
+}
+```
+
+### `POST /predict/disease`
+Perform pathology classification on an uploaded crop leaf photograph.
+* **Content-Type:** `multipart/form-data`
+* **Form Field:** `file` (JPEG/PNG image)
+* **Response (200 OK):**
+```json
+{
+  "label": "Tomato___Early_blight",
+  "crop": "Tomato",
+  "disease": "Early blight",
+  "healthy": false,
+  "confidence": 0.91,
+  "top3": [
+    { "label": "Tomato___Early_blight", "confidence": 0.91 },
+    { "label": "Tomato___Target_Spot", "confidence": 0.05 },
+    { "label": "Tomato___healthy", "confidence": 0.04 }
+  ]
+}
+```
+
+### `POST /damage/compare`
+Analyze bitemporal crop photos (same angle before and after disaster) for canopy loss and structural damage.
+* **Content-Type:** `multipart/form-data`
+* **Form Fields:** `before` (image file), `after` (image file)
+* **Response (200 OK):**
+```json
+{
+  "canopy_loss_pct": 42.5,
+  "green_before_pct": 71.2,
+  "green_after_pct": 40.9,
+  "ssim": 0.38,
+  "change_score": 0.62,
+  "diff_png_b64": "data:image/png;base64,..."
+}
+```
+
