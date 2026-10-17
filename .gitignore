@@ -157,3 +157,9 @@ __pycache__/
 env/
 venv/
 .venv/
+
+# Backend runtime data
+backend/data/*.db
+backend/data/images/*
+backend/data/reports/*
+!backend/data/mandi_prices.csv
