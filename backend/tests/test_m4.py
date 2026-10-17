@@ -1,19 +1,25 @@
 import json
 import os
 import sqlite3
+import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+# Ensure backend directory is in sys.path regardless of CWD
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 import pytest
 
-from app.alerts import send_alert
-from app.market import get_best_mandi, get_market_prices
-from app.report import generate_claim_pdf
-from app.routers.organic import get_trust_score
+from app.alerts import build_message, send_alert
+from app.market import get_best_mandi, get_market_prices, haversine_km
+from app.report import generate_claim_pdf, utc_to_ist_str
+from app.routers.organic import get_trust_score, add_field_input, InputLogCreate
 from app.seed_organic import seed_demo
 
-SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schema.sql"
+SCHEMA_PATH = BACKEND_DIR / "schema.sql"
 
 
 @pytest.fixture
@@ -171,3 +177,60 @@ def test_generate_claim_pdf_output(test_db):
     with open(full_path, "rb") as f:
         header = f.read(4)
         assert header == b"%PDF"
+
+
+def test_bilingual_alert_templates():
+    hi_msg = build_message(
+        kind="damage_detected",
+        language="hi",
+        farmer_name="Ramesh",
+        field_name="North Plot",
+        crop="Tomato",
+        peril="hail",
+        deadline_str="within 72 hours",
+        helpline="14447",
+    )
+    assert "किसान Ramesh" in hi_msg
+    assert "ओलावृष्टि" in hi_msg
+    assert "14447" in hi_msg
+
+    en_msg = build_message(
+        kind="damage_detected",
+        language="en",
+        farmer_name="Ramesh",
+        field_name="North Plot",
+        crop="Tomato",
+        peril="hail",
+        deadline_str="within 72 hours",
+        helpline="14447",
+    )
+    assert "Farmer Ramesh" in en_msg
+    assert "Hailstorm" in en_msg
+    assert "14447" in en_msg
+
+
+def test_haversine_distance_and_transport_math():
+    # Raipur (21.2514, 81.6296) to Bilaspur (22.0797, 82.1409) is ~106 km straight line
+    dist = haversine_km(21.2514, 81.6296, 22.0797, 82.1409)
+    assert 90.0 <= dist <= 120.0
+
+
+def test_chemical_input_penalty_in_trust_score(test_db):
+    # First get initial score
+    initial_score = get_trust_score(1)
+    initial_anomaly = initial_score["components"]["anomaly_free"]
+
+    # Log chemical input (urea)
+    add_field_input(1, InputLogCreate(input_type="urea", description="synthetic booster"))
+
+    # Score should reflect deduction
+    updated_score = get_trust_score(1)
+    updated_anomaly = updated_score["components"]["anomaly_free"]
+    assert updated_anomaly <= initial_anomaly - 10.0
+    assert any(f["type"] == "chemical_input" for f in updated_score["flags"])
+
+
+def test_utc_to_ist_conversion():
+    res = utc_to_ist_str("2026-10-18T10:00:00Z")
+    assert "UTC" in res
+    assert "IST" in res
