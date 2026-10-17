@@ -22,7 +22,17 @@ uvicorn app.main:app --port 8000 --host 0.0.0.0 &
 BACKEND_PID=$!
 
 # 2. Start ML Service (Port 8001, if exists)
-if [ -d "$ROOT_DIR/ml" ] && [ -f "$ROOT_DIR/ml/main.py" ]; then
+if [ -d "$ROOT_DIR/ml-service" ] && [ -f "$ROOT_DIR/ml-service/run.py" ]; then
+    echo "[2/3] Starting ML Service on http://localhost:8001..."
+    cd "$ROOT_DIR/ml-service"
+    if [ ! -d "venv" ]; then
+        python3 -m venv venv || python -m venv venv
+    fi
+    source venv/bin/activate || source venv/Scripts/activate
+    pip install -q -r requirements.txt || true
+    python run.py &
+    ML_PID=$!
+elif [ -d "$ROOT_DIR/ml" ] && [ -f "$ROOT_DIR/ml/main.py" ]; then
     echo "[2/3] Starting ML Service on http://localhost:8001..."
     cd "$ROOT_DIR/ml"
     if [ ! -d "venv" ]; then
