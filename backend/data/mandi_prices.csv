@@ -1,0 +1,14 @@
+state,district,market,commodity,variety,arrival_date,min_price,max_price,modal_price,lat,lon
+Chhattisgarh,Raipur,Raipur,Tomato,Deshi,2026-10-17,2000,2400,2200,21.2514,81.6296
+Chhattisgarh,Raipur,Arang,Tomato,Hybrid,2026-10-17,1950,2300,2150,21.1925,81.9680
+Chhattisgarh,Durg,Durg,Tomato,Hybrid,2026-10-17,2100,2500,2350,21.1904,81.2849
+Chhattisgarh,Rajnandgaon,Rajnandgaon,Tomato,Local,2026-10-17,2200,2600,2400,21.1004,81.0360
+Chhattisgarh,Bilaspur,Bilaspur,Tomato,Hybrid,2026-10-17,2300,2700,2500,22.0797,82.1409
+Chhattisgarh,Dhamtari,Dhamtari,Tomato,Deshi,2026-10-17,2050,2450,2250,20.7071,81.5497
+Chhattisgarh,Mahasamund,Mahasamund,Tomato,Deshi,2026-10-17,1900,2300,2100,21.1086,82.0967
+Chhattisgarh,Baloda Bazar,Bhatapara,Tomato,Hybrid,2026-10-17,2100,2500,2300,21.7374,81.9338
+Chhattisgarh,Raipur,Raipur,Potato,Jyoti,2026-10-17,1400,1700,1550,21.2514,81.6296
+Chhattisgarh,Durg,Durg,Potato,Deshi,2026-10-17,1450,1750,1600,21.1904,81.2849
+Chhattisgarh,Raipur,Raipur,Onion,Red,2026-10-17,2800,3400,3100,21.2514,81.6296
+Chhattisgarh,Bilaspur,Bilaspur,Onion,Nasik,2026-10-17,2900,3500,3200,22.0797,82.1409
+Chhattisgarh,Raipur,Raipur,Rice,Swarna,2026-10-17,2400,2800,2600,21.2514,81.6296
