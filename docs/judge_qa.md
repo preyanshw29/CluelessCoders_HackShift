@@ -72,3 +72,23 @@ This document provides transparent, mathematically grounded, and commercially re
 **Answer:**
 > *"In a 30-hour hackathon environment, waiting for real crops to experience a hailstorm or a 48-hour monsoon flood is impossible. 
 > Therefore, we built a mathematically calibrated sensor simulator (`simulate.py`) that strictly pulls from our contract specifications (`scenario_profiles.json`). When you trigger 'Flood', it generates soil moisture (88–98%), rainfall (10–25mm), and humidity (85–95%) that accurately mirror real agronomic flood thresholds. The backend processes this synthetic stream through the identical production pipeline that live field hardware would use."*
+
+---
+
+### Q8: What happens when rural fields lose cellular connectivity? How does the system handle offline periods?
+**Answer:**
+> *"Field connectivity in rural India is intermittent by nature. Our hardware and ingestion architecture are designed with an offline-first buffering model:
+> 1. **Local Ring Buffer:** The edge microcontroller stores sensor readings and image hashes in local non-volatile flash storage with monotonically increasing sequence IDs and hardware RTC timestamps.
+> 2. **Cryptographic Chaining at Rest:** Even offline, each new photo is linked to the previous photo's hash. The chain continuity is preserved locally.
+> 3. **Batch Sync & Replay:** Once cellular or Wi-Fi connectivity is restored, the unit replays the buffered telemetry batch to the backend. The backend verifies that the hash chain is unbroken and that timestamps remain chronologically consistent.
+> 4. **Deadline Tolerance:** For PMFBY 72-hour filing, even if an offline period lasts 12–24 hours, the timestamped cryptographic evidence proves the exact hour the disaster occurred once the unit reconnects."*
+
+---
+
+### Q9: What prevents a bad actor from physically tampering with the sensors or pouring water on the probe?
+**Answer:**
+> *"Physical and sensor tampering is a standard concern in agricultural insurance. FasalSakshi protects against this through multi-source cross-corroboration:
+> 1. **Satellite Meteorological Cross-Check:** If a farmer pours buckets of water on the soil probe, the ground sensor indicates 95% saturation. However, the Open-Meteo meteorological check returns 0 mm rainfall and 0 cloud cover for the GPS coordinate. The policy engine scores the discrepancy as an anomaly rather than a flood peril.
+> 2. **Optical Vegetation Verification:** In a real flood or hailstorm, canopy foliage is stripped or flattened (canopy loss $\ge 35\%$, SSIM drops). Artificial ground watering leaves the visual canopy unchanged, failing the 40% visual score requirement.
+> 3. **Enclosure Security:** The production field unit incorporates an internal accelerometer (detecting physical repositioning or camera angle tilting) and a chassis tamper microswitch that invalidates the local cryptographic state if opened without authorization."*
+
