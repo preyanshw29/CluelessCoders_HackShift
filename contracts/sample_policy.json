@@ -1,0 +1,26 @@
+{
+  "scheme": "PMFBY-style sample policy (verify real rules before quoting)",
+  "policy_no": "DEMO-2026-0001",
+  "crop": "tomato",
+  "season": "rabi_2026",
+  "area_ha": 1.5,
+  "sum_insured_per_ha": 80000,
+  "sum_insured_total": 120000,
+  "deductible_pct": 10,
+  "reporting_window_hours": 72,
+  "perils": {
+    "individual": ["hail", "flood"],
+    "area_based": ["drought", "frost"]
+  },
+  "thresholds": {
+    "hail":   { "weather_codes": [96, 99], "min_gust_kmh": 50 },
+    "flood":  { "min_rain_24h_mm": 100 },
+    "drought":{ "max_soil_moisture_pct": 15 },
+    "frost":  { "max_min_temp_c": 2 }
+  },
+  "report_to": {
+    "channel": "Crop Insurance app / insurer helpline / bank branch",
+    "helpline": "14447",
+    "note": "Sample value; verify current channel and window for the scheme and state."
+  }
+}
