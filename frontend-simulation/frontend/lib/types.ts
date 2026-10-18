@@ -225,3 +225,17 @@ export type Policy = {
     note: string;
   };
 };
+
+export type TopPrediction = {
+  label: string;
+  confidence: number;
+};
+
+export type DiseasePrediction = {
+  label: string;
+  crop: string;
+  disease: string;
+  healthy: boolean;
+  confidence: number;
+  top3: TopPrediction[];
+};

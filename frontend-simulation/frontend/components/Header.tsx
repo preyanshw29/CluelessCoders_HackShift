@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Languages,
+  Stethoscope,
 } from 'lucide-react';
 
 export default function Header() {
@@ -27,6 +28,7 @@ export default function Header() {
     { href: '/fields/1/evidence', label: t.evidence, icon: ShieldCheck },
     { href: '/claims/1', label: t.claims, icon: FileSpreadsheet },
     { href: '/market', label: t.market, icon: TrendingUp },
+    { href: '/disease', label: (t as any).cropDoctor || 'Crop Doctor', icon: Stethoscope },
   ];
 
   const isActive = (path: string) => {
