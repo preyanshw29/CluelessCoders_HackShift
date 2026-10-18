@@ -51,15 +51,30 @@ export default function ClaimHeroPage() {
         if (!mounted) return;
         setClaim(claimData);
 
+        let eventData: EventRec | null = null;
         if (claimData.event_id) {
-          const eventData = await getEvent(claimData.event_id);
+          eventData = await getEvent(claimData.event_id);
           if (mounted) setEvent(eventData);
         }
 
         const allImages = await getImages(claimData.field_id);
         if (mounted && allImages.length > 0) {
-          const before = allImages.find((img) => img.role === 'before') || allImages[0];
-          const after = allImages.find((img) => img.role === 'after') || allImages[allImages.length - 1];
+          let before = eventData?.before_image_id
+            ? allImages.find((img) => img.id === eventData.before_image_id)
+            : null;
+          let after = eventData?.after_image_id
+            ? allImages.find((img) => img.id === eventData.after_image_id)
+            : null;
+
+          if (!before) {
+            const befores = allImages.filter((img) => img.role === 'before');
+            before = befores[befores.length - 1] || allImages[0];
+          }
+          if (!after) {
+            const afters = allImages.filter((img) => img.role === 'after');
+            after = afters[afters.length - 1] || allImages[allImages.length - 1];
+          }
+
           setBeforeImage(before);
           setAfterImage(after);
         }
@@ -447,7 +462,14 @@ export default function ClaimHeroPage() {
               ) : null}
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-red-950/80 via-transparent to-transparent p-4 text-white">
                 <span className="mt-auto font-bold text-xs uppercase tracking-wider bg-red-700/80 px-2 py-0.5 rounded">
-                  Defoliation & Tearing ({canopyLoss.toFixed(1)}% Loss)
+                  {claim?.peril === 'flood'
+                    ? (language === 'hi' ? 'जलमग्नता और जड़ गलन' : 'Inundation & Submergence')
+                    : claim?.peril === 'drought'
+                    ? (language === 'hi' ? 'नमी ह्रास और पत्तियां सूखना' : 'Moisture Depletion & Scorching')
+                    : claim?.peril === 'frost'
+                    ? (language === 'hi' ? 'शीत परिगलन और मुरझाव' : 'Freeze Necrosis & Wilt')
+                    : (language === 'hi' ? 'पत्तियों और तने का कटना' : 'Defoliation & Tearing')}{' '}
+                  ({canopyLoss.toFixed(1)}% {language === 'hi' ? 'नुकसान' : 'Loss'})
                 </span>
               </div>
             </div>
