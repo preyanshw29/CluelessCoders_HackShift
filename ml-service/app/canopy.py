@@ -26,10 +26,17 @@ def get_vegetation_mask(rgb_array: np.ndarray, exg_threshold: float = 0.04) -> n
 
 def compute_green_percentage(rgb_array: np.ndarray) -> float:
     """
-    Compute percentage of green canopy pixels relative to total image area.
-    Returns value bounded between 0.0 and 100.0.
+    Compute percentage of green canopy pixels relative to standing crop canopy area.
+    Focuses on the standing crop canopy (upper 70% of field camera view) to distinguish
+    standing vegetative foliage from ground debris and soil.
     """
-    mask = get_vegetation_mask(rgb_array)
+    if rgb_array.shape[0] > 100:
+        h_cutoff = int(rgb_array.shape[0] * 0.70)
+        eval_region = rgb_array[:h_cutoff, :]
+    else:
+        eval_region = rgb_array
+
+    mask = get_vegetation_mask(eval_region)
     total_pixels = mask.size
     if total_pixels == 0:
         return 0.0
