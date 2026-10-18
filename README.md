@@ -67,7 +67,7 @@ flowchart TD
     end
 
     Sensors -->|POST /api/readings| IngestAPI
-    Camera -->|POST /api/fields/{id}/images| IngestAPI
+    Camera -->|POST /api/fields/:id/images| IngestAPI
     Camera -->|POST /damage/compare| CanopyExG
     Camera -->|POST /predict/disease| DiseaseModel
     IngestAPI --> HashVault
