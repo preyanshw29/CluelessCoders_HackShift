@@ -112,23 +112,44 @@ export default function DiseaseDiagnosisPage() {
     }
   };
 
+  const SAMPLE_IMAGES: Record<string, string> = {
+    early_blight: '/images/disease_sample.jpg',
+    healthy: '/images/sample_healthy.jpg',
+    late_blight: '/images/sample_late_blight.jpg',
+    curl_virus: '/images/sample_curl_virus.jpg',
+  };
+
   const handleSelectSample = async (sampleKey: string) => {
     setActiveSample(sampleKey);
     setAnalyzing(true);
     setResult(null);
 
-    // Set sample placeholder image
-    if (sampleKey === 'early_blight') {
-      setSelectedImage('/images/disease_sample.jpg');
-    } else {
-      setSelectedImage(null);
+    const imgPath = SAMPLE_IMAGES[sampleKey] || '/images/disease_sample.jpg';
+    setSelectedImage(imgPath);
+
+    try {
+      const imgRes = await fetch(imgPath);
+      if (imgRes.ok) {
+        const blob = await imgRes.blob();
+        const diagnosis = await predictCropDisease(blob);
+        const sampleMeta = Object.values(SAMPLE_DIAGNOSES).find((s) => s.label === diagnosis.label);
+        setResult({
+          ...diagnosis,
+          pathogen: sampleMeta?.pathogen || SAMPLE_DIAGNOSES[sampleKey]?.pathogen || 'Solanaceous Pathogen',
+          remedy: sampleMeta?.remedy || SAMPLE_DIAGNOSES[sampleKey]?.remedy || 'Consult your nearest Krishi Vigyan Kendra (KVK) extension officer.',
+        });
+        setAnalyzing(false);
+        return;
+      }
+    } catch {
+      // Fallback to sample presets below
     }
 
-    // Simulate microservice inference latency
+    // Simulate microservice inference latency for fallback
     setTimeout(() => {
       setResult(SAMPLE_DIAGNOSES[sampleKey]);
       setAnalyzing(false);
-    }, 600);
+    }, 500);
   };
 
   return (

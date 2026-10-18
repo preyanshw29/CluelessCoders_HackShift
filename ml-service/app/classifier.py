@@ -27,10 +27,16 @@ def load_model_if_available():
             import torchvision.models as models
 
             _torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            checkpoint = torch.load(MODEL_PATH, map_location=_torch_device)
             # Default to MobileNetV2 architecture with 10 Tomato output classes
             model = models.mobilenet_v2(weights=None)
-            model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, len(TOMATO_CLASSES))
-            checkpoint = torch.load(MODEL_PATH, map_location=_torch_device)
+            if isinstance(checkpoint, dict) and "classifier.1.1.weight" in checkpoint:
+                model.classifier[1] = torch.nn.Sequential(
+                    torch.nn.Dropout(p=0.2),
+                    torch.nn.Linear(model.classifier[1].in_features, len(TOMATO_CLASSES)),
+                )
+            else:
+                model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, len(TOMATO_CLASSES))
             model.load_state_dict(checkpoint)
             model.eval()
             _pytorch_model = model

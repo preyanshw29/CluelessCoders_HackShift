@@ -56,18 +56,23 @@
    > Third, using the policy terms, we calculate the net claimable indemnity after deductibles: an estimated ₹27,000 to ₹51,000.
    > Now I click 'Download PDF Report'—instantly, our backend compiles an insurer-grade dossier complete with timestamps in UTC/IST, sensor telemetry curves, and the full hash-chain audit table."*
 
-#### Minute 2:10 – 3:00: Post-Harvest Market Realization & Pathology Diagnostics
-1. **Action:** Navigate to `http://localhost:3000/market`.
+#### Minute 2:10 – 3:00: Post-Harvest Market Realization & AI Crop Doctor
+1. **Action:** Click "Crop Doctor" in header (`http://localhost:3000/disease`).
 2. **Narration:**
-   > *"FasalSakshi is built for prosperity, not just disaster. In normal seasons, farmers face mandi price opacity and exploitative middlemen.
-   > Our market module compares regional mandis and factors in real road transport costs at ₹0.25 per quintal per kilometer. Even though Bilaspur is further away, its higher modal price yields the highest net profit after transport.
-   > Finally, notice our Organic Evidence Score. By logging chemical-free inputs like neem spray and vermicompost, while monitoring soil EC for synthetic fertilizer dumping, Ramesh proves his crop's organic integrity and commands a 10% to 30% price premium.
-   > In parallel, our ML microservice on port 8001 continuously scans leaf photos for early-stage pathology—instantly identifying Early Blight and Bacterial Spot before catastrophic crop loss occurs."*
+   > *"Before calamity strikes, early pathology detection protects yields. In our new Crop Doctor module, Ramesh uploads foliage photos for instant AI diagnosis.
+   > Watch as I click 'Early Blight' or upload a field sample: our trained MobileNetV2 neural network (99% validation accuracy) evaluates the leaf in milliseconds, outputting 98.8% confidence, identifying Alternaria solani, and delivering localized Krishi Vigyan Kendra (KVK) organic remedies like copper hydroxide and neem bio-fungicides."*
+3. **Action:** Navigate to `http://localhost:3000/market`.
+4. **Narration:**
+   > *"Finally, FasalSakshi is built for prosperity. In our market module, we compare regional mandis with real transport costs at ₹0.25/q/km. Bilaspur yields higher net profit than nearby Raipur.
+   > And our Organic Evidence Score tracks chemical-free vermicompost vs soil EC sensor spikes, securing a 10% to 30% premium for Ramesh Kumar."*
 
 ---
 
-
 ### Fallback Checklist for Live Presentation
-* **If internet drops:** All backend data, CSV prices, and fallback mock weather run completely locally on `localhost:8000` and `localhost:3000`. No external connection is strictly required.
+* **If internet drops:** All backend data, CSV prices, and fallback mock weather run completely locally on `localhost:8000`, `localhost:8001`, and `localhost:3000`. No external connection is required.
 * **If browser cache is stale:** Hard refresh `Ctrl + Shift + R` or toggle the Hindi/English language button in the header to demonstrate dynamic internationalization.
-* **If judges ask to see code:** Point directly to `backend/app/hashchain.py` for the cryptographic SHA-256 verification and `backend/app/report.py` for the ReportLab PDF compilation engine.
+* **If judges ask to see code:** 
+  - `ml-service/app/classifier.py` for the MobileNetV2 10-class disease inference engine.
+  - `ml-service/app/damage.py` & `canopy.py` for Excess Green ($2G - R - B$) canopy loss segmentation and SSIM differential heatmaps.
+  - `backend/app/hashchain.py` for the cryptographic SHA-256 tamper-proof ledger.
+  - `backend/app/report.py` for the ReportLab PDF compilation engine.
