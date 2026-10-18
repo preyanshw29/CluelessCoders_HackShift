@@ -16,11 +16,11 @@ set ROOT_DIR=%SCRIPT_DIR%..
 
 REM 1. Start ML Microservice in a new window
 echo [1/3] Launching ML Microservice on port 8001...
-start "FasalSakshi - ML Microservice [Port 8001]" cmd /k "cd /d "%ROOT_DIR%\ml-service" && .\venv\Scripts\python.exe run.py"
+start "FasalSakshi - ML Microservice [Port 8001]" cmd /k "cd /d "%ROOT_DIR%\ml-service" && (if exist .\venv\Scripts\python.exe (.\venv\Scripts\python.exe run.py) else (python run.py))"
 
 REM 2. Start Backend API in a new window
 echo [2/3] Launching Backend API on port 8000...
-start "FasalSakshi - Backend API [Port 8000]" cmd /k "cd /d "%ROOT_DIR%\backend" && .\venv\Scripts\python.exe -m uvicorn app.main:app --port 8000 --reload"
+start "FasalSakshi - Backend API [Port 8000]" cmd /k "cd /d "%ROOT_DIR%\backend" && (if exist .\venv\Scripts\python.exe (.\venv\Scripts\python.exe -m uvicorn app.main:app --port 8000 --reload) else (python -m uvicorn app.main:app --port 8000 --reload))"
 
 REM 3. Start Next.js Frontend in a new window
 echo [3/3] Launching Next.js Frontend on port 3000...

@@ -41,7 +41,7 @@ async def predict_crop_disease(file: UploadFile = File(...)):
     Diagnose tomato disease from leaf photo.
     Accepts multipart file and returns top-3 predicted pathology classes with confidence scores.
     """
-    if not file.content_type.startswith("image/"):
+    if file.content_type and not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail=f"Invalid file type '{file.content_type}'. Must be an image.")
 
     try:
